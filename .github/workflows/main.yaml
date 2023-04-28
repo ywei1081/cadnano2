@@ -89,10 +89,13 @@ jobs:
     - name: Download builds
       uses: actions/download-artifact@v3
       with:
-        path: ~
+        path: "."
     - name: Display structure of downloaded files
-      run: ls -R ~
+      run: ls -R
     - name: Create Release
       uses: softprops/action-gh-release@v1
       env:
         GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.GITHUB_REF || github.event.head_commit.message }}
+        name: ${{ github.event.head_commit.message }}
