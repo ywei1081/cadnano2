@@ -97,5 +97,5 @@ jobs:
     - name: Create Release
       uses: softprops/action-gh-release@v1
       with:
-        tag_name: ${{ github.GITHUB_REF || github.event.head_commit.message }}
+        tag_name: ${{ github.ref || github.event.head_commit.message }}
         name: ${{ github.event.head_commit.message }}
