@@ -1,4 +1,29 @@
-- name: PyInstaller Windows
-  uses: JackMcKew/pyinstaller-action-windows@main
-  with:
-    path: .
+name: Cadnano2
+
+on:
+  push:
+    branches:
+        - master
+        - dev
+  pull_request:
+    branches:
+      - master
+      - dev
+
+jobs:
+  build:
+
+    runs-on: ubuntu-latest
+
+    steps:
+    - uses: actions/checkout@v3
+
+    - name: Cadnano2
+      uses: JackMcKew/pyinstaller-action-windows@main
+      with:
+        path: "."
+
+    - uses: actions/upload-artifact@v3
+      with:
+        name: cadnano.exe
+        path: dist/cadnano.exe
