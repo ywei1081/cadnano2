@@ -12,7 +12,7 @@ on:
 
 jobs:
   build-linux:
-    runs-on: ubuntu-latest
+    runs-on: windows-latest
     steps:
     - uses: actions/checkout@v3
     - name: Set up Python ${{ matrix.python-version }}
@@ -27,8 +27,8 @@ jobs:
     - name: build-bundle
       run: |
         pyinstaller cadnano.spec
-        mv dist/cadnano dist/cadnano-linux
+        move dist/cadnano.exe dist/cadnano-win.exe
     - uses: actions/upload-artifact@v3
       with:
-        name: cadnano-linux
-        path: dist/cadnano-linux
+        name: cadnano-win
+        path: dist/cadnano-win.exe
