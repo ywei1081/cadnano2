@@ -99,7 +99,7 @@ jobs:
       with:
         tag_name: ${{ github.ref_name }}
         name: ${{ github.event.head_commit.message }}
-      files: |
-        cadnano2-linux
-        cadnano2-macos
-        cadnano2-win.exe
+        files: |
+          cadnano2-linux
+          cadnano2-macos
+          cadnano2-win.exe
