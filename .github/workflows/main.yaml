@@ -28,8 +28,7 @@ jobs:
     - name: build-bundle
       run: |
         pyinstaller cadnano.spec
-        dir dist
-        move dist/cadnano.exe dist/cadnano-win.exe
+        MOVE dist\cadnano.exe dist\cadnano-win.exe
       shell: cmd
     - uses: actions/upload-artifact@v3
       with:
