@@ -25,7 +25,7 @@ jobs:
         python -m pip install pyinstaller pillow
         python setup.py install
         if exist requirements.txt pip install -r requirements.txt
-        python -m pip uninstall PyQt6-sip
+        python -m pip uninstall -y PyQt6-sip
         python -m pip install PyQt6-sip
       shell: cmd
     - name: build-bundle
