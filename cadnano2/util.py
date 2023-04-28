@@ -3,7 +3,7 @@ util
 Created by Jonathan deWerd.
 """
 import inspect
-from traceback import extract_stack
+from traceback import extract_stack, print_exc
 from random import Random
 import string
 import sys
@@ -87,7 +87,7 @@ def qtWrapImport(name, globaldict, fromlist):
                 qtWrapImport = qtWrapImportFromPyQt
                 return qtWrapImport(name, globaldict, fromlist)
             except ImportError:
-                pass
+                print_exc()
         elif trialFmwk == 'PySide':
             try:
                 import PySide
