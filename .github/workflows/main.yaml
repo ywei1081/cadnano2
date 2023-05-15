@@ -11,31 +11,31 @@ on:
       - dev
 
 jobs:
-  # build-win:
-    # runs-on: windows-latest
-    # steps:
-    # - uses: actions/checkout@v3
-    # - name: Set up Python 3.10
-      # uses: actions/setup-python@v4
-      # with:
-        # python-version: '3.10'
-    # - name: install-dependencies
-      # run: |
-        # python -m pip install --upgrade pip
-        # python -m pip install pyinstaller pillow
-        # python setup.py install
-        # if exist requirements.txt pip install -r requirements.txt
-        # python -m pip uninstall -y PyQt6-sip
-        # python -m pip install PyQt6-sip
-      # shell: cmd
-    # - name: build-bundle
-      # run: |
-        # pyinstaller cadnano.spec
-      # shell: cmd
-    # - uses: actions/upload-artifact@v3
-      # with:
-        # name: cadnano-windows
-        # path: dist/cadnano.exe
+  build-win:
+    runs-on: windows-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    - name: install-dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install pyinstaller pillow
+        python setup.py install
+        if exist requirements.txt pip install -r requirements.txt
+        python -m pip uninstall -y PyQt6-sip
+        python -m pip install PyQt6-sip
+      shell: cmd
+    - name: build-bundle
+      run: |
+        pyinstaller cadnano.spec
+      shell: cmd
+    - uses: actions/upload-artifact@v3
+      with:
+        name: cadnano-windows
+        path: dist/cadnano.exe
 
   build-linux:
     runs-on: ubuntu-latest
@@ -55,6 +55,7 @@ jobs:
         python -m pip install PyQt6-sip
         sudo apt update
         sudo apt install -y libgl1 libegl1 libglib2.0-0 libxkbcommon-x11-0 libdbus-1-3 libgtk-3-0 libqt6*
+    # glibc compatiblity issue at lower linux distro
     - name: build-bundle
       run: |
         pyinstaller cadnano.spec
@@ -63,47 +64,49 @@ jobs:
         name: cadnano-linux
         path: dist/cadnano
 
-  # build-macos:
-    # runs-on: macos-latest
-    # steps:
-    # - uses: actions/checkout@v3
-    # - name: Set up Python 3.10
-      # uses: actions/setup-python@v4
-      # with:
-        # python-version: '3.10'
-    # - name: install-dependencies
-      # run: |
-        # python -m pip install --upgrade pip
-        # python -m pip install pyinstaller pillow
-        # python setup.py install
-        # if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
-    # - name: build-bundle
-      # run: |
-        # pyinstaller cadnano.spec
-    # - uses: actions/upload-artifact@v3
-      # with:
-        # name: cadnano-macos
-        # path: dist/cadnano
+  build-macos:
+    runs-on: macos-latest
+    steps:
+    - uses: actions/checkout@v3
+    - name: Set up Python 3.10
+      uses: actions/setup-python@v4
+      with:
+        python-version: '3.10'
+    - name: install-dependencies
+      run: |
+        python -m pip install --upgrade pip
+        python -m pip install pyinstaller pillow
+        python setup.py install
+        if [ -f requirements.txt ]; then pip install -r requirements.txt; fi
+        python -m pip uninstall -y PyQt6-sip
+        python -m pip install PyQt6-sip
+    - name: build-bundle
+      run: |
+        pyinstaller cadnano.spec
+    - uses: actions/upload-artifact@v3
+      with:
+        name: cadnano-macos
+        path: dist/cadnano
 
-  # publish:
-    # runs-on: ubuntu-latest
-    # needs: [build-win, build-linux, build-macos]
-    # steps:
-    # - uses: actions/checkout@v3
-    # - name: Download builds
-      # uses: actions/download-artifact@v3
-      # with:
-        # path: "."
-    # - run: |
-        # mv ./cadnano-linux/cadnano cadnano2-linux
-        # mv ./cadnano-macos/cadnano cadnano2-macos
-        # mv ./cadnano-windows/cadnano.exe cadnano2-win.exe
-    # - name: Create Release
-      # uses: softprops/action-gh-release@v1
-      # with:
-        # tag_name: ${{ github.ref_name }}
-        # name: ${{ github.event.head_commit.message }}
-        # files: |
-          # cadnano2-linux
-          # cadnano2-macos
-          # cadnano2-win.exe
+  publish:
+    runs-on: ubuntu-latest
+    needs: [build-win, build-linux, build-macos]
+    steps:
+    - uses: actions/checkout@v3
+    - name: Download builds
+      uses: actions/download-artifact@v3
+      with:
+        path: "."
+    - run: |
+        mv ./cadnano-linux/cadnano cadnano2-linux
+        mv ./cadnano-macos/cadnano cadnano2-macos
+        mv ./cadnano-windows/cadnano.exe cadnano2-win.exe
+    - name: Create Release
+      uses: softprops/action-gh-release@v1
+      with:
+        tag_name: ${{ github.ref_name }}
+        name: ${{ github.event.head_commit.message }}
+        files: |
+          cadnano2-linux
+          cadnano2-macos
+          cadnano2-win.exe
