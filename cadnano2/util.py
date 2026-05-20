@@ -3,11 +3,12 @@ util
 Created by Jonathan deWerd.
 """
 import inspect
-from traceback import extract_stack
+import functools
+from traceback import extract_stack, print_exc
 from random import Random
 import string
 import sys
-import os 
+import os
 
 import platform
 from itertools import dropwhile, starmap
@@ -30,12 +31,12 @@ chosenQtFramework = None
 #     """
 #     special function that allows for the import of PySide or PyQt modules
 #     as available
-# 
+#
 #     name is the name of the Qt top level class such as QtCore, or QtGui
-# 
+#
 #     globaldict is a the module level global namespace dictionary returned from
 #     calling the globals() method
-# 
+#
 #     fromlist is a list of subclasses such as [QFont, QColor], or [QRectF]
 #     """
 #     global qtWrapFramework  # This method is a stub. It gets swapped out for
@@ -133,7 +134,7 @@ def qtWrapImportFromPySide(name, globaldict, fromlist):
     for key in fromlist:
         if key in ('pyqtSignal', 'pyqtSlot', 'QString', 'QStringList'):
             if key == 'pyqtSignal':
-                globaldict[key] = getattr(imports, 'Signal') 
+                globaldict[key] = getattr(imports, 'Signal')
             elif key == 'pyqtSlot':
                 globaldict[key] = getattr(imports, 'Slot')
             elif key == 'QString':
@@ -168,6 +169,19 @@ def overlap(x,y, a,b):
 # end def
 
 
+def suppress_exc(exc, default=None):
+    def decorator(func):
+        @functools.wraps(func)
+        def wrapper(*args, **kwargs):
+            try:
+                return func(*args, **kwargs)
+            except exc:
+                print_exc()
+                return default
+        return wrapper
+    return decorator
+
+
 def trace(n):
     """Returns a stack trace n frames deep"""
     s = extract_stack()
@@ -182,7 +196,7 @@ def trace(n):
 def defineEventForwardingMethodsForClass(classObj, forwardedEventSuffix, eventNames):
     """Automatically defines methods of the form eventName0Event(self, event) on
     classObj that call self.activeTool().eventName0ForwardedEventSuffix(self, event).
-    Note that self here is the 2nd argument of eventName0ForwardedEventSuffix which 
+    Note that self here is the 2nd argument of eventName0ForwardedEventSuffix which
     will be defined with 3 arguments, the first of which will implicitly be the
     activeTool(). If self.activeTool() does not implement eventName0ForwardedEventSuffix,
     no error is raised.
@@ -388,12 +402,12 @@ def findChild(self):
 # Define a context manager to suppress stdout and stderr.
 class suppress_stdout_stderr(object):
     '''
-    A context manager for doing a "deep suppression" of stdout and stderr in 
-    Python, i.e. will suppress all print, even if the print originates in a 
+    A context manager for doing a "deep suppression" of stdout and stderr in
+    Python, i.e. will suppress all print, even if the print originates in a
     compiled C/Fortran sub-function.
        This will not suppress raised exceptions, since exceptions are printed
     to stderr just before a script exits, and after the context manager has
-    exited (at least, I think that is why it lets exceptions through).      
+    exited (at least, I think that is why it lets exceptions through).
 
     '''
     def __init__(self):

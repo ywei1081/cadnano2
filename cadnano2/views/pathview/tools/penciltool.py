@@ -112,7 +112,7 @@ class PencilTool(AbstractPathTool):
 
     def attemptToCreateXover(self, virtualHelixItem, strand3p, idx):
         xoi = self._tempXover
-        n5 = xoi._node5 
+        n5 = xoi._node5
         idx5 = n5._idx
         strand5p = n5._strand
         part = virtualHelixItem.part()
@@ -135,7 +135,7 @@ class ForcedStrandItem(QGraphicsLineItem):
         self._highCap = EndpointItem(self, 'high', isDrawn5to3)
         self._lowCap.disableEvents()
         self._highCap.disableEvents()
-        
+
         # orientation
         self._isDrawn5to3 = isDrawn5to3
 
@@ -210,6 +210,7 @@ class ForcedStrandItem(QGraphicsLineItem):
         self.resetEndPointItems(isDrawn5to3)
     # end def
 
+    @util.suppress_exc(AttributeError)
     def resetEndPointItems(self, isDrawn5to3):
         bw = _baseWidth
         self._isDrawn5to3 = isDrawn5to3
@@ -306,7 +307,7 @@ ppR3.addPolygon(r3poly)
 
 class ForcedXoverNode3(QGraphicsRectItem):
     """
-    This is a QGraphicsRectItem to allow actions and also a 
+    This is a QGraphicsRectItem to allow actions and also a
     QGraphicsSimpleTextItem to allow a label to be drawn
     """
     def __init__(self, virtualHelixItem, xoverItem, strand3p, idx):
@@ -346,6 +347,7 @@ class ForcedXoverNode3(QGraphicsRectItem):
         self.updatePositionAndAppearance(isFromStrand=False)
     # end def
 
+    @util.suppress_exc(RuntimeError)
     def updateForFloatFromStrand(self, virtualHelixItem, strand3p, idx):
         """
 
@@ -575,13 +577,13 @@ class ForcedXoverItem(QGraphicsPathItem):
     def strandType(self):
         return self._strandType
     # end def
-    
+
     def hide5prime(self):
         self._node5._pathThing.hide()
 
     def hide3prime(self):
         self._node3._pathThing.hide()
-        
+
     def show3prime(self):
         if self._node3._blankThing.isVisible():
             self._node3._pathThing.show()
@@ -618,7 +620,7 @@ class ForcedXoverItem(QGraphicsPathItem):
         self._virtualHelixItem = virtualHelixItem
         self.setParentItem(virtualHelixItem.partItem())
         self._strandType = strand5p.strandSet().strandType()
-        if self._node5 == None:
+        if self._node5 is None or self._node3 is None:
             self._node5 = ForcedXoverNode5(virtualHelixItem, self, strand5p, idx)
             self._node3 = ForcedXoverNode3(virtualHelixItem, self, strand5p, idx)
         self._node5.updateForFloatFromStrand(virtualHelixItem, strand5p, idx)
@@ -626,6 +628,7 @@ class ForcedXoverItem(QGraphicsPathItem):
         self.updateFloatPath()
     # end def
 
+    @util.suppress_exc(AttributeError)
     def updateFloatingFromVHI(self, virtualHelixItem, strandType, idxX, idxY):
         # floating Xover!
         self._node5.setPartnerVirtualHelix(virtualHelixItem)
@@ -684,7 +687,7 @@ class ForcedXoverItem(QGraphicsPathItem):
             sameStrand = False
             sameParity = False
             threeEnterPt = threeCenterPt = threeExitPt = pt3
-        else: 
+        else:
             pt3 = vhi3.mapToItem(partItem, *node3.point())
             threeIsTop = node3.isOnTop()
             threeIs5to3 = node3.isDrawn5to3()
@@ -811,7 +814,7 @@ class EndpointItem(QGraphicsPathItem):
         cA.mousePressEvent = self.mousePressEvent
         cA.mouseMoveEvent = self.mouseMoveEvent
         cA.setPen(_noPen)
-        
+
     # end def
 
     def __repr__(self):
@@ -829,7 +832,7 @@ class EndpointItem(QGraphicsPathItem):
         else:  # high or dual, doesn't matter
             return self._strandItem.idxs()[1]
     # end def
-    
+
     def partItem(self):
         return self._strandItem.partItem()
     # end def
@@ -844,6 +847,7 @@ class EndpointItem(QGraphicsPathItem):
         return self._strandItem.window()
 
     ### PUBLIC METHODS FOR DRAWING / LAYOUT ###
+    @util.suppress_exc(RuntimeError, False)
     def updatePosIfNecessary(self, idx):
         """Update position if necessary and return True if updated."""
         x = int(idx*_baseWidth)
@@ -852,6 +856,7 @@ class EndpointItem(QGraphicsPathItem):
             return True
         return False
 
+    @util.suppress_exc(RuntimeError)
     def resetEndPoint(self, isDrawn5to3):
         self.setParentItem(self._strandItem.virtualHelixItem())
         self._initCapSpecificState(isDrawn5to3)

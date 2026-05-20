@@ -596,6 +596,7 @@ class DocumentController():
             self.filesavedialog = None
         self.newDocument()
 
+    @util.suppress_exc(IOError, False)
     def exportStaplesCallback(self, selected):
         """Export all staple sequences to selected CSV file.
 
@@ -785,6 +786,7 @@ class DocumentController():
                 return False
         return True
 
+    @util.suppress_exc(AttributeError, False)
     def writeDocumentToFile(self, filename=None):
         helixOrderList = self.win.pathroot.getSelectedPartOrderedVHList()
 
