@@ -501,7 +501,7 @@ class Part(QObject):
         else:
             e.redo()
     # end def
-    
+
     def removeAllOligos(self, useUndoStack=True):
         # clear existing oligos
         cmds = []
@@ -782,7 +782,7 @@ class Part(QObject):
         else:
             c.redo()
     # end def
-    
+
     class RenumberVirtualHelicesCommand(QUndoCommand):
         """
         """
@@ -792,7 +792,7 @@ class Part(QObject):
             self._vhs = [part.virtualHelixAtCoord(coord) for coord in coordList]
             self._oldNumbers = [vh.number() for vh in self._vhs]
         # end def
-            
+
         def redo(self):
             even = 0
             odd = 1
@@ -812,7 +812,7 @@ class Part(QObject):
                 for strand in oligo.strand5p().generator3pStrand():
                     strand.strandUpdateSignal.emit(strand)
         # end def
-            
+
         def undo(self):
             for vh, num in zip(self._vhs, self._oldNumbers):
                 vh.setNumber(num)
@@ -1121,7 +1121,7 @@ class Part(QObject):
                                         x <= idx + 2 * part._step]
 
         if vh is None:
-            return
+            return []
 
         fromStrandSets = vh.getStrandSets()
         neighbors = self.getVirtualHelixNeighbors(vh)
@@ -1413,7 +1413,7 @@ class Part(QObject):
                 nO3p.incrementLength(strand.totalLength())
             # end def
             nO3p.setStrand5p(strand3p)
-            
+
             self._isLoop = strand3p.oligo().isLoop()
         # end def
 
@@ -1536,7 +1536,7 @@ class Part(QObject):
     class RemoveAllStrandsCommand(QUndoCommand):
         """
         1. Remove all strands. Emits strandRemovedSignal for each.
-        2. Remove all oligos. 
+        2. Remove all oligos.
         """
         def __init__(self, part):
             super(Part.RemoveAllStrandsCommand, self).__init__()
