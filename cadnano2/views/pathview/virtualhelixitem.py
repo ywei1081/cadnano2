@@ -276,6 +276,7 @@ class VirtualHelixItem(QGraphicsPathItem):
             event.setAccepted(False)
     # end def
 
+    @util.suppress_exc(RuntimeError)
     def customMouseRelease(self, event):
         """
         Parses a mouseReleaseEvent to extract strandSet and base index,
